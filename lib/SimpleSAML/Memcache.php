@@ -46,7 +46,7 @@ class Memcache
      *
      * @return mixed The data stored with the given key, or null if no data matching the key was found.
      */
-    public static function get($key)
+    public static function get(string $key)
     {
         Logger::debug("loading key $key from memcache");
 
@@ -151,7 +151,7 @@ class Memcache
      * @param integer|null $expire The expiration timestamp of the data.
      * @return void
      */
-    public static function set($key, $value, $expire = null)
+    public static function set(string $key, $value, ?int $expire = null) : void
     {
         Logger::debug("saving key $key to memcache");
         $savedInfo = [
@@ -182,9 +182,8 @@ class Memcache
      * @param string $key The key we should delete.
      * @return void
      */
-    public static function delete($key)
+    public static function delete(string $key) : void
     {
-        assert(is_string($key));
         Logger::debug("deleting key $key from memcache");
 
         // store this object to all groups of memcache servers
@@ -212,13 +211,13 @@ class Memcache
      *    The timeout for contacting this server, in seconds.
      *    The default value is 3 seconds.
      *
-     * @param \Memcache $memcache The Memcache object we should add this server to.
+     * @param \Memcache|\Memcached $memcache The Memcache object we should add this server to.
      * @param array    $server An associative array with the configuration options for the server to add.
      * @return void
      *
      * @throws \Exception If any configuration option for the server is invalid.
      */
-    private static function addMemcacheServer($memcache, $server)
+    private static function addMemcacheServer($memcache, array $server) : void
     {
         // the hostname option is required
         if (!array_key_exists('hostname', $server)) {
@@ -304,7 +303,7 @@ class Memcache
      *
      * @param array $group Array of servers which should be created as a group.
      *
-     * @return \Memcache A Memcache object of the servers in the group
+     * @return \Memcache|\Memcached A Memcache object of the servers in the group
      *
      * @throws \Exception If the servers configuration is invalid.
      */
@@ -354,7 +353,7 @@ class Memcache
      * This function gets a list of all configured memcache servers. This list is initialized based
      * on the content of 'memcache_store.servers' in the configuration.
      *
-     * @return \Memcache[] Array with Memcache objects.
+     * @return \Memcache[]|\Memcached[] Array with Memcache objects.
      *
      * @throws \Exception If the servers configuration is invalid.
      */
@@ -417,7 +416,7 @@ class Memcache
      *
      * @throws \Exception If the option 'memcache_store.expires' has a negative value.
      */
-    private static function getExpireTime()
+    private static function getExpireTime() : int
     {
         // get the configuration instance
         $config = Configuration::getInstance();
@@ -454,7 +453,7 @@ class Memcache
      *
      * @throws \Exception If memcache server status couldn't be retrieved.
      */
-    public static function getStats()
+    public static function getStats() : array
     {
         $ret = [];
 
@@ -481,7 +480,7 @@ class Memcache
      *
      * @return array An array with the extended stats output for each server group.
      */
-    public static function getRawStats()
+    public static function getRawStats() : array
     {
         $ret = [];
 

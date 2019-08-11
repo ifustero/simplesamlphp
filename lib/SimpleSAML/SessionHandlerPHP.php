@@ -119,7 +119,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @return void
      */
-    public function restorePrevious()
+    public function restorePrevious() : void
     {
         if (empty($this->previous_session)) {
             return; // nothing to do here
@@ -158,7 +158,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @return string The new session id.
      */
-    public function newSessionId()
+    public function newSessionId() : string
     {
         // generate new (secure) session id
         if (function_exists('session_create_id')) {
@@ -183,7 +183,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @throws \SimpleSAML\Error\Exception If the cookie is marked as secure but we are not using HTTPS.
      */
-    public function getCookieSessionId()
+    public function getCookieSessionId() : ?string
     {
         if (!$this->hasSessionCookie()) {
             return null; // there's no session cookie, can't return ID
@@ -208,7 +208,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @return string The session cookie name.
      */
-    public function getSessionCookieName()
+    public function getSessionCookieName() : string
     {
         return $this->cookie_name;
     }
@@ -220,7 +220,7 @@ class SessionHandlerPHP extends SessionHandler
      * @param \SimpleSAML\Session $session The session object we should save.
      * @return void
      */
-    public function saveSession(\SimpleSAML\Session $session)
+    public function saveSession(Session $session) : void
     {
         $_SESSION['SimpleSAMLphp_SESSION'] = serialize($session);
     }
@@ -236,10 +236,8 @@ class SessionHandlerPHP extends SessionHandler
      * @throws \SimpleSAML\Error\Exception If it wasn't possible to disable session cookies or we are trying to load a
      * PHP session with a specific identifier and it doesn't match with the current session identifier.
      */
-    public function loadSession($sessionId = null)
+    public function loadSession(string $sessionId = null) : ?Session
     {
-        assert(is_string($sessionId) || $sessionId === null);
-
         if ($sessionId !== null) {
             if (session_id() === '') {
                 // session not initiated with getCookieSessionId(), start session without setting cookie
@@ -277,7 +275,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @return boolean True if it was set, false otherwise.
      */
-    public function hasSessionCookie()
+    public function hasSessionCookie() : bool
     {
         return array_key_exists($this->cookie_name, $_COOKIE);
     }
@@ -294,7 +292,7 @@ class SessionHandlerPHP extends SessionHandler
      * @throws \SimpleSAML\Error\Exception If both 'session.phpsession.limitedpath' and 'session.cookie.path' options
      * are set at the same time in the configuration.
      */
-    public function getCookieParams()
+    public function getCookieParams() : array
     {
         $config = Configuration::getInstance();
 
@@ -327,7 +325,7 @@ class SessionHandlerPHP extends SessionHandler
      *
      * @throws \SimpleSAML\Error\CannotSetCookie If we can't set the cookie.
      */
-    public function setCookie($sessionName, $sessionID, array $cookieParams = null)
+    public function setCookie(string $sessionName, ?string $sessionID, array $cookieParams = null) : void
     {
         if ($cookieParams === null) {
             $cookieParams = session_get_cookie_params();
